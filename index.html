@@ -1,17 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game</title>
+    <title>Labyrinth Explorer</title>
     <link rel="stylesheet" href="styles.css">
-    
+    <link rel="icon" type="image/ico" href="images/favicon.ico">
 </head>
 
 <body>
-    <canvas id="space" width="600" height="400"></canvas>
+    <div id="main-layout">
+
+        <div id="game-wrapper">
+            <div id="game-over-overlay" style="display: none;">
+                <h2>GAME OVER</h2>
+                <p>ENEMIES SLAIN: <span id="final-score">0</span></p>
+                <input type="text" id="player-name" placeholder="ENTER NAME" maxlength="10">
+                <button id="retry-btn">SUBMIT & RETRY</button>
+            </div>
+            <div id="ui-layer">
+                <div class="stats">
+                    <div>⚔ ENEMIES: <span id="slain-count">0</span></div>
+                    <div>❤ HP: <span id="hp-count">100</span>%</div>
+                </div>
+
+                <div class="inventory-box">
+                    INVENTORY:
+                    <span id="inventory-list">
+                        <span class="inv-item active-weapon">Sword</span>
+                    </span>
+                </div>
+
+                <div id="log">Welcome to the Labyrinth...</div>
+            </div>
+
+            <canvas id="space" width="600" height="400"></canvas>
+        </div>
+
+        <div id="leaderboard">
+            <h3>TOP EXPLORERS</h3>
+            <ul id="leaderboard-list">
+                <li>1. Legend... 99</li>
+                <li>2. Hero..... 50</li>
+                <li>3. Noob..... 05</li>
+            </ul>
+        </div>
+
+    </div>
+
     <script src="game.js"></script>
-    
 </body>
+
 
 </html>
