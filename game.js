@@ -685,7 +685,7 @@ async function submit() {
     initGame();
 }
 
-function retry() {
+async function retry() {
     document.getElementById("game-over-overlay").style.display = "none";
     initGame();
 }
