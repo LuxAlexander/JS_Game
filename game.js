@@ -736,7 +736,7 @@ async function submitAndRetry() {
 
     // AJAX Call to Node.js Backend
     try {
-        await fetch('http://localhost:3000/submit-score', {
+        await fetch('https://jsgame-production.up.railway.app/api/submit-score', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: name, score: enemiesSlain })
@@ -757,7 +757,7 @@ async function submitAndRetry() {
 // Fetch from Backend
 async function loadLeaderboardFromServer() {
     try {
-        const res = await fetch('http://localhost:3000/leaderboard');
+        const res = await fetch('https://jsgame-production.up.railway.app/api/leaderboard');
         const data = await res.json();
         
         const list = document.getElementById("leaderboard-list");
