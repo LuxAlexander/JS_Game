@@ -17,6 +17,7 @@ let enemiesSlain = 0;
 let goldCollected = 0;
 let hasBow = false;
 let difficulty = 1;
+let goldpickup=false;
 
 let leaderboardData = [
     { name: "x", score: 5 },
@@ -55,6 +56,7 @@ const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 function updateUI(logMsg = null) {
     document.getElementById("slain-count").innerText = enemiesSlain;
     document.getElementById("hp-count").innerText = Math.ceil(player ? player.health : 0);
+    document.getElementById("gold-count").innerText = goldCollected;
 
     if (logMsg) {
         document.getElementById("log").innerText = logMsg;
@@ -80,7 +82,8 @@ function updateLeaderboardUI() {
     list.innerHTML = sorted.map((entry, i) => `
         <li>
             <span>${i + 1}. ${entry.name}</span>
-            <span style="color: deepskyblue">${entry.score}</span>
+            <span style="color: slimegreen">${entry.score}</span>
+             <span style="color: yellow">${entry.gold}</span>
         </li>
     `).join("");
 }
@@ -119,6 +122,7 @@ class Room {
     }
 
     generateLabyrinth() {
+        goldpickup=false;
         // 1. Fill the entire room with walls
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
@@ -658,10 +662,11 @@ class Chest extends Entity {
     }
 
     update() {
-        if (dist(this.pos, player.pos) < 30) {
+        if (dist(this.pos, player.pos) < 30&&!goldpickup) {
             player.gold = (player.gold || 0) + 50;
             goldCollected += 50;
             updateUI("Found 50 gold!");
+            goldpickup = true;
         }
         this.draw();
     }
@@ -677,7 +682,7 @@ class Door {
         this.w = 40; this.h = 80;
     }
     draw() {
-        c.fillStyle = "green";
+        c.fillStyle = "#834333";
         c.fillRect(this.x, this.y, this.w, this.h);
 
         if (
