@@ -293,7 +293,7 @@ class Item extends Entity {
             c.fillStyle = "#FF0000";
             c.fillRect(ox + 2 * px, oy + 4 * px, 4 * px, 3 * px);
             c.fillRect(ox + 3 * px, oy + 3 * px, 2 * px, px);
-        }else if (this.type === "bow") {
+        } else if (this.type === "bow") {
 
             // 0. Draw the Bowstring
             c.fillStyle = "white";
@@ -337,7 +337,7 @@ class Item extends Entity {
 
     update(deltaTime) {
         if (dist(this.pos, player.pos) < 30) {
-            if (this.type === "health") {
+            if (this.type === "health"&&player.health < player.maxHealth) {
                 player.health = Math.min(player.maxHealth, player.health + 50);
                 updateUI("Picked up Health Potion");
             } else if (this.type === "bow") {
@@ -596,7 +596,9 @@ class GooPuddle extends Entity {
 
 class Chest extends Entity {
     constructor(x, y) { super(x, y, 32, 32, "gold"); }
-    draw() { c.drawImage(chestImg, this.pos.x, this.pos.y, this.width, this.height); }
+    draw() {
+        c.drawImage(chestImg, this.pos.x, this.pos.y, this.width, this.height);
+    }
     update(deltaTime) {
         if (dist(this.pos, player.pos) < 30 && !goldpickup) {
             goldCollected += 50;
