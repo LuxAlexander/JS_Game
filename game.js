@@ -1,6 +1,12 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
+const penguinImg = new Image();
+penguinImg.src = "./images/pengu.ico"; // or path like "./assets/pengu.ico"
+
+const chestImg = new Image();
+chestImg.src = "./images/chest.ico";
+
 canvas.width = 1000;
 canvas.height = 500;
 
@@ -8,6 +14,7 @@ canvas.height = 500;
 
 let isGameOver = false;
 let enemiesSlain = 0;
+let goldCollected = 0;
 let hasBow = false;
 let difficulty = 1;
 
@@ -450,7 +457,7 @@ class Arrow extends Entity {
 
 class Player extends Living {
     constructor(x, y) {
-        super(x, y, 30, 30, "deepskyblue");
+        super(x, y, 25, 20, "deepskyblue");
         this.inventory = { weapons: [new Sword()], index: 0 };
         this.dir = { x: 1, y: 0 };
         this.speedModifier = 1;
@@ -479,18 +486,13 @@ class Player extends Living {
         }
     }
     draw() {
-        const px = this.width / 6;
-        const py = this.height / 6;
-
-        c.fillStyle = "#1e90ff"; // body
-        c.fillRect(this.pos.x + px, this.pos.y + py * 2, px * 4, py * 3);
-
-        c.fillStyle = "#ffd1a9"; // head
-        c.fillRect(this.pos.x + px * 2, this.pos.y, px * 2, py * 2);
-
-        c.fillStyle = "black"; // eyes
-        c.fillRect(this.pos.x + px * 2.3, this.pos.y + py, px * 0.4, py * 0.4);
-        c.fillRect(this.pos.x + px * 3.3, this.pos.y + py, px * 0.4, py * 0.4);
+        c.drawImage(
+            penguinImg,
+            this.pos.x,
+            this.pos.y,
+            this.width,
+            this.height
+        );
     }
 
     update() {
@@ -645,9 +647,20 @@ class Chest extends Entity {
         super(x, y, 32, 32, "gold");
     }
 
+    draw() {
+        c.drawImage(
+            chestImg,
+            this.pos.x,
+            this.pos.y,
+            this.width,
+            this.height
+        );
+    }
+
     update() {
         if (dist(this.pos, player.pos) < 30) {
             player.gold = (player.gold || 0) + 50;
+            goldCollected += 50;
             updateUI("Found 50 gold!");
         }
         this.draw();
@@ -725,12 +738,12 @@ function onGameOver() {
     isGameOver = true;
     const overlay = document.getElementById("game-over-overlay");
     const scoreDisplay = document.getElementById("final-score");
-    
+
     scoreDisplay.innerText = enemiesSlain;
     overlay.style.display = "block"; // Show the HTML input
 }
 
-async function submitAndRetry() {
+async function submit() {
     const nameInput = document.getElementById("player-name");
     const name = nameInput.value.trim() || "Unknown";
 
@@ -739,9 +752,9 @@ async function submitAndRetry() {
         await fetch('https://jsgame-production.up.railway.app/api/submit-score', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: name, score: enemiesSlain })
+            body: JSON.stringify({ username: name, score: enemiesSlain, gold: goldCollected })
         });
-        
+
         // Refresh leaderboard after saving
         loadLeaderboardFromServer();
     } catch (err) {
@@ -751,7 +764,13 @@ async function submitAndRetry() {
     // Reset Game
     document.getElementById("game-over-overlay").style.display = "none";
     nameInput.value = "";
-    initGame(); 
+    initGame();
+
+}
+
+async function retry() {
+    document.getElementById("game-over-overlay").style.display = "none";
+    initGame();
 }
 
 // Fetch from Backend
@@ -759,12 +778,13 @@ async function loadLeaderboardFromServer() {
     try {
         const res = await fetch('https://jsgame-production.up.railway.app/api/leaderboard');
         const data = await res.json();
-        
+
         const list = document.getElementById("leaderboard-list");
         list.innerHTML = data.map((entry, i) => `
             <li>
                 <span>${i + 1}. ${entry.name}</span>
-                <span style="color: deepskyblue">${entry.score}</span>
+                <span style="color: slimegreen">${entry.score}</span>
+                <span style="color: yellow">${entry.gold}</span>
             </li>
         `).join("");
     } catch (err) {
@@ -773,7 +793,8 @@ async function loadLeaderboardFromServer() {
 }
 
 // Event Listeners
-document.getElementById("retry-btn").addEventListener("click", submitAndRetry);
+document.getElementById("submit-btn").addEventListener("click", submit);
+document.getElementById("retry-btn").addEventListener("click", retry);
 
 // Initialize and start
 initGame();
