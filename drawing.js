@@ -1,3 +1,4 @@
+//Use Canvas to draw
 const canvas = document.getElementById('space');
 const ctx = canvas.getContext('2d');
 
