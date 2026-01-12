@@ -431,6 +431,7 @@ class Arrow extends Entity {
         if (!dungeon.room.isWalkable(this.pos.x, this.pos.y, this.width, this.height)) {
             this.destroy();
         }
+
         this.draw();
     }
 }
@@ -658,6 +659,7 @@ function animate(time = performance.now()) {
             if (arrows[i].dead) arrows.splice(i, 1);
         }
     } else {
+        hasBow=false;
         dungeon.room.update(deltaTime);
         onGameOver();
     }
@@ -689,6 +691,7 @@ async function submit() {
 
 async function retry() {
     document.getElementById("game-over-overlay").style.display = "none";
+    loadLeaderboardFromServer();
     initGame();
 }
 
