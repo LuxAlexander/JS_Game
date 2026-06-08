@@ -337,7 +337,7 @@ class Item extends Entity {
 
     update(deltaTime) {
         if (dist(this.pos, player.pos) < 30) {
-            if (this.type === "health"&&player.health < player.maxHealth) {
+            if (this.type === "health" && player.health < player.maxHealth) {
                 player.health = Math.min(player.maxHealth, player.health + 50);
                 updateUI("Picked up Health Potion");
             } else if (this.type === "bow") {
@@ -659,7 +659,7 @@ function animate(time = performance.now()) {
             if (arrows[i].dead) arrows.splice(i, 1);
         }
     } else {
-        hasBow=false;
+        hasBow = false;
         dungeon.room.update(deltaTime);
         onGameOver();
     }
